@@ -1,12 +1,7 @@
 <?php
 
 error_reporting(1);
-
-//Transmission Credentials
-$user = "lombardi";
-$pass = "Rev0lt1x01";
-$connection   = "192.168.1.102:1338";
-  
+require_once("authentication.php");
 
 
 //====== API ========
@@ -15,8 +10,8 @@ $connection   = "192.168.1.102:1338";
 function generateQuery($command)
 {
     global $user,
-            $pass,
-            $connection;
+           $pass,
+           $connection;
     
     exec('transmission-remote '.$connection.' --auth  '.$user.':'.$pass.' '.$command, $output);
     return $output;
@@ -34,4 +29,18 @@ function getAllTorrents()
     return generateQuery('-l');
 }
 
+//Adds torrent via URL+Autostart, returns FAIL/SUCESS
+function addTorrent($url, $autostart = false)
+{
+    $autostart = "";
+    
+    if($autostart === true)
+        $start = "--no-start-paused";
+    else
+        $start = "--start-paused";
+        
+    return generateQuery($start." --add ".$url);
+}
+
+//=====================
 ?>
