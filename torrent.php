@@ -2,26 +2,23 @@
 error_reporting(1);
 require_once("authentication.php");
 
-/* DEBUG data
-$tor1 = new Torrent(16);
-echo PHP_EOL.'> '.$tor1->getID();
-echo PHP_EOL.'==> '.$tor1->getName();
-echo PHP_EOL.'==> '.$tor1->getHash();
-echo PHP_EOL.'==> '.$tor1->getComplete();
-echo PHP_EOL.'==> '.$tor1->getMagnetURI();
-*/
-
 class Torrent
 {
     //Class variables
-    private $id;
-    private $name;
-    
-    private $hash,
+    private $id,
+            $name,
+            $hash,
             $magnetURI,
             $state,
             $location,
-            $complete;
+            $complete,
+            $ETA,
+            $downSpeed,
+            $upSpeed,
+            $totalSize,
+            $downloaded,
+            $uploaded,
+            $ratio;
     
     //Constructor
     function __construct($id)
@@ -33,14 +30,24 @@ class Torrent
             $this->update();
     }
     
-    //Class methods
+    //Sets the objects values, this will be called every refresh.
     function update()
     {
         $data = generateQuery(' -t'.$this->id.' -i');
-        $this->name = $this->stripTextBuffer($data[2]);
-        $this->hash = $this->stripTextBuffer($data[3]);
+        
+        $this->name = $this->stripTextBuffer($data[2]); 
+        $this->hash = $this->stripTextBuffer($data[3]); 
         $this->magnet = $this->stripTextBuffer($data[4]);
+        $this->state = $this->stripTextBuffer($data[7]);
+        $this->location = $this->stripTextBuffer($data[8]);
         $this->complete = $this->stripTextBuffer($data[9]);
+        $this->ETA = $this->stripTextBuffer($data[10]);
+        $this->downSpeed = $this->stripTextBuffer($data[11]);
+        $this->upSpeed = $this->stripTextBuffer($data[12]);
+        $this->totalSize = $this->stripTextBuffer($data[15]);
+        $this->downloaded = $this->stripTextBuffer($data[16]);
+        $this->uploaded = $this->stripTextBuffer($data[17]);
+        $this->ratio = $this->stripTextBuffer($data[18]);
     }
     
     //Removes the 'key value' on the array object
@@ -53,26 +60,46 @@ class Torrent
     
     //Get+Set 'ers
     function getID()
-    {
-        return $this->id;
-    }
-    function getName()
-    {
-        return $this->name;
-    }
-    function getMagnetURI()
-    {
-        return $this->magnet;
-    }
-    function getHash()
-    {
-        return $this->hash;
-    }
-    function getComplete()
-    {
-        return $this->complete;
-    }
+    { return $this->id; }
     
-   
+    function getName()
+    { return $this->name; }
+    
+    function getMagnetURI()
+    { return $this->magnet; }
+    
+    function getHash()
+    { return $this->hash; }
+    
+    function getComplete()
+    { return $this->complete; }
+    
+    function getState()
+    { return $this->state; }
+
+    function getLocation()
+    { return $this->location; }
+    
+    function getETA()
+    { return $this->ETA; }
+    
+    function getDownSpeed()
+    { return $this->downSpeed; }
+    
+    function getUpSpeed()
+    { return $this->upSpeed; }
+    
+    function getTotalSize()
+    { return $this->totalSize; }
+    
+    function getDownloaded()
+    { return $this->downloaded; }
+    
+    function getUploaded()
+    { return $this->uploaded; }
+    
+    function getRatio()
+    { return $this->ratio; }
+    
 }
 ?>
