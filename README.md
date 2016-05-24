@@ -3,7 +3,7 @@
 
 ####Usage:
 
-put transmission credientials into authentication.php then include 'transd-lib.php' into your application.
+put transmission credentials into authentication.php then include 'transd-lib.php' into your application.
 
 
 **example usage:**
