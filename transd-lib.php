@@ -2,7 +2,10 @@
 
 error_reporting(1);
 require_once("authentication.php");
+require_once("torrent.php");
 
+$torrentList = array();
+    
 //============= API ============//
 // Where the paramater $id      //
 // is expected; values such     //
@@ -77,5 +80,26 @@ function stop($id)
     return generateQuery('-t'.$id.' -S');
 }
 
+//
+function populateTorrents()
+{
+    $ids = array();
+
+    //Grab the ID
+    $idArray = generateQuery('-l | sed \'s/  */ /g\' | cut -d\' \' -f2');
+    
+    foreach($idArray as $counter=>$index)
+    {
+        //Dont include the first and last rows of torrent information, they're just header/footer rows.
+        if($counter != 0 and $counter != count($idArray)-1)
+            $ids[$counter].=$index;
+    }
+    
+    //Populate torrents
+    foreach($ids as $counter=>$newTor)
+    {
+        $torrentList[$counter] = new Torrent($newTor);
+    }
+}
 
 ?>

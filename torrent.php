@@ -27,6 +27,8 @@ class Torrent
         //If we successfully give this object a ID then load it with data.
         if($this->id != NULL)
             $this->update();
+        
+        echo 'Torrent: '.$this->id.' created.'.PHP_EOL;
     }
     
     //Sets the objects values, this will be called every refresh.
@@ -58,6 +60,7 @@ class Torrent
     }
     
     //Get+Set 'ers
+
     function getID()
     { return $this->id; }
     
