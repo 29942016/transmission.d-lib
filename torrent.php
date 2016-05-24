@@ -59,8 +59,39 @@ class Torrent
         return $text;
     }
     
-    //Get+Set 'ers
-
+    //======= Torrent functions =========
+    
+    //Start downloading/uploading
+    function start()
+    {
+        return generateQuery(' -t'.$this->id.' -s');
+    }
+    
+    //Stop downloading/uploading
+    function stop()
+    {
+        return generateQuery(' -t'.$this->id.' -S');
+    }
+    
+    //Returns a structured array of this objects properties i.e name,id,hash,magnet.
+    function info()
+    {
+        return get_object_vars($this);
+    }
+    
+    // Remove the torrent, if delete is true then also remove related data, returns FAIL/SUCCESS in array object
+    function remove($delete = false)
+    {
+        if($delete == true)
+            return generateQuery('-t'.$id.' -R');
+        else    
+            return generateQuery('-t'.$id.' -r');
+    }
+    
+    //=====================================
+    
+    
+    //========== Get+set 'ers ============
     function getID()
     { return $this->id; }
     
@@ -102,6 +133,7 @@ class Torrent
     
     function getRatio()
     { return $this->ratio; }
+    //==================================
     
 }
 ?>

@@ -4,27 +4,13 @@ error_reporting(1);
 require_once("authentication.php");
 require_once("torrent.php");
 
+//Declare and initilize the torrent list
 $torrentList = array();
-    
-//============= API ============//
-// Where the paramater $id      //
-// is expected; values such     //
-// as: '2,3,4' or '2-4'         //
-// can be passed, representing  //
-// torrents from 2 to 4         //
-//==============================//
+refreshTorrents();
 
-//Returns a specific torrent via its array index.
-function getTorrent($id)
-{
-   return generateQuery('-t'.$id.' -i');
-}
-
-//Returns all currently added torrents.
-function getAllTorrents()
-{
-    return generateQuery('-l');
-}
+//=========================================
+//      Transmission Settings API
+//=========================================
 
 //Adds torrent via URL+Autostart, returns FAIL/SUCCESS
 function addTorrent($url, $autostart = true)
@@ -37,16 +23,6 @@ function addTorrent($url, $autostart = true)
         $start = "--start-paused";
         
     return generateQuery($start." --add ".$url);
-}
-
-//Remove a torrent via id, if delete is true then also remove related data, returns FAIL/SUCCESS
-function removeTorrent($id, $delete = false)
-{
-    if($id != NULL)
-        return generateQuery('-t'.$id.' -r');
-    else if($id != NULL && $delete == true)
-        return generateQuery('-t'.$id.' -R');
-    
 }
 
 //Sets the Upload/Download speed, if 0 then no limit is applied.
@@ -68,38 +44,41 @@ function setSpeed($down = NULL, $up = NULL)
     
 }
 
-//Start the selected torrent
-function start($id)
-{
-    return generateQuery('-t'.$id.' -s');
-}
-
-//Stop the selected torrent
-function stop($id)
-{
-    return generateQuery('-t'.$id.' -S');
-}
-
-//
-function populateTorrents()
+//Check for available torrents and then populate our own torrent object array
+function refreshTorrents()
 {
     $ids = array();
-
-    //Grab the ID
+    global $torrentList;
+    
+    //Grab the ID of every available torrent into a array
     $idArray = generateQuery('-l | sed \'s/  */ /g\' | cut -d\' \' -f2');
     
+    //move the array ids into a ordered array.
     foreach($idArray as $counter=>$index)
     {
         //Dont include the first and last rows of torrent information, they're just header/footer rows.
-        if($counter != 0 and $counter != count($idArray)-1)
-            $ids[$counter].=$index;
+        if($counter != 0 && $counter != count($idArray)-1)
+            $ids[$counter-1].=$index;
     }
     
-    //Populate torrents
+    //create torrent objects based off the available ids
     foreach($ids as $counter=>$newTor)
     {
         $torrentList[$counter] = new Torrent($newTor);
     }
+    
+}
+
+//function used for debugging 
+function debug()
+{
+    global $torrentList;
+    
+    //echo var_dump($torrentList);
+    
+    //echo $torrentList[0]->getName();
+    $test = $torrentList[0]->info();
+    var_dump($test);
 }
 
 ?>
