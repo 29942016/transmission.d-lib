@@ -1,9 +1,9 @@
 <?php
 
 //Transmission Credentials
-$user = "lombardi";
-$pass = "Rev0lt1x01";
-$connection   = "192.168.1.102:1338";
+$user = "___";
+$pass = "___";
+$connection   = "192.168.1.___:1338";
   
 //base command, used by all API.
 function generateQuery($command)
