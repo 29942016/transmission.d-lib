@@ -16,5 +16,12 @@ function generateQuery($command)
     return $output;
 }
 
+//Removes the 'key value' on the array object
+function stripTextBuffer($text)
+{
+    $text = strstr($text, ': ');          //Strip everything preceeding ':'
+    $text = str_replace(': ', '', $text); //Strip the ':'
+    return $text;
+}
     
 ?>

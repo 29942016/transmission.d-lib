@@ -4,16 +4,15 @@ error_reporting(1);
 require_once("authentication.php");
 require_once("torrent.php");
 
-//Declare and initilize the torrent list
-$torrentList = array();
+//Declare and initilize the array for storing torrents
+$torrents = array();
 refreshTorrents();
 
 //=========================================
-//      Transmission Global Settings API
+//   Transmission Global Settings API
 //=========================================
 
 //Adds torrent via URL+Autostart, returns FAIL/SUCCESS
-
 function addTorrent($url, $autostart = true)
 {
     $autostart = "";
@@ -24,6 +23,23 @@ function addTorrent($url, $autostart = true)
         $start = "--start-paused";
         
     return generateQuery($start." --add ".$url);
+}
+
+//Starts all torrents
+function startAll()
+{
+    global $torrents;
+    
+    foreach($torrents as $torrent)
+        $torrent->start();
+}
+//Stops all torrents
+function stopAll()
+{
+    global $torrents;
+    
+    foreach($torrents as $torrent)
+        $torrent->stop();
 }
 
 //Sets the global Upload/Download speed, if 0 then no limit is applied.
@@ -45,13 +61,27 @@ function setSpeed($down = NULL, $up = NULL)
     
 }
 
+//Tell the daemon to run a script as the transmission user on torrent completion
+function runScriptOnFinish($enabled = false, $scriptPath = "")
+{
+    if($enabled == true && $scriptPath != "")
+        return generateQuery('--torrent-done-script '.$scriptPath);
+    else
+        return generateQuery('--no-torrent-done-script');
+        
+}
+
+//Returns current session stats + overall statistics in array
+function sessionStats()
+{
+     return generateQuery('-st | sed \'s/  */ /g\' ');        
+}
+
 //Check for available torrents and then populate our own torrent object array
 function refreshTorrents()
 {
     $ids = array();
-    global $torrentList;
-    //unset($torrentList);  
-    //$torrentList = array();
+    global $torrents;
     
     //Grab the ID of every available torrent into a array
     $idArray = generateQuery('-l | sed \'s/  */ /g\' | cut -d\' \' -f2');
@@ -66,8 +96,6 @@ function refreshTorrents()
     
     //create torrent objects based off the available ids
     foreach($ids as $counter=>$newTor)
-    {
-        $torrentList[$counter] = new Torrent($newTor);
-    }
+        $torrents[$counter] = new Torrent($newTor);
 }
 ?>

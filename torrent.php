@@ -32,59 +32,50 @@ class Torrent
     }
     
     //Sets the objects values.
-    function update()
+    private function update()
     {
         $data = generateQuery(' -t'.$this->id.' -i');
         
-        $this->name = $this->stripTextBuffer($data[2]); 
-        $this->hash = $this->stripTextBuffer($data[3]); 
-        $this->magnet = $this->stripTextBuffer($data[4]);
-        $this->state = $this->stripTextBuffer($data[7]);
-        $this->location = $this->stripTextBuffer($data[8]);
-        $this->complete = $this->stripTextBuffer($data[9]);
-        $this->ETA = $this->stripTextBuffer($data[10]);
-        $this->downSpeed = $this->stripTextBuffer($data[11]);
-        $this->upSpeed = $this->stripTextBuffer($data[12]);
-        $this->totalSize = $this->stripTextBuffer($data[15]);
-        $this->downloaded = $this->stripTextBuffer($data[16]);
-        $this->uploaded = $this->stripTextBuffer($data[17]);
-        $this->ratio = $this->stripTextBuffer($data[18]);
-        $this->peers = $this->stripTextBuffer($data[20]);
-        $this->bandwidthAllowance = $this->stripTextBuffer($data[41]);
+        $this->name     = stripTextBuffer($data[2]); 
+        $this->hash     = stripTextBuffer($data[3]); 
+        $this->magnet   = stripTextBuffer($data[4]);
+        $this->state    = stripTextBuffer($data[7]);
+        $this->location = stripTextBuffer($data[8]);
+        $this->complete = stripTextBuffer($data[9]);
+        $this->ETA      = stripTextBuffer($data[10]);
+        $this->downSpeed= stripTextBuffer($data[11]);
+        $this->upSpeed  = stripTextBuffer($data[12]);
+        $this->totalSize = stripTextBuffer($data[15]);
+        $this->downloaded = stripTextBuffer($data[16]);
+        $this->uploaded = stripTextBuffer($data[17]);
+        $this->ratio    = stripTextBuffer($data[18]);
+        $this->peers    = stripTextBuffer($data[20]);
+        $this->bandwidthAllowance = stripTextBuffer($data[41]);
         
         
     }
-    
-    //Removes the 'key value' on the array object
-    function stripTextBuffer($text)
-    {
-        $text = strstr($text, ': ');          //Strip everything preceeding ':'
-        $text = str_replace(': ', '', $text); //Strip the ':'
-        return $text;
-    }
-    
     //======= Torrent functions =========
     
     //Start downloading/uploading
-    function start()
+    public function start()
     {
         return generateQuery(' -t'.$this->id.' -s');
     }
     
     //Stop downloading/uploading
-    function stop()
+    public function stop()
     {
         return generateQuery(' -t'.$this->id.' -S');
     }
     
     //Returns a structured array of this objects properties i.e name,id,hash,magnet.
-    function info()
+    public function info()
     {
         return get_object_vars($this);
     }
     
     // Remove the torrent, if delete is true then also remove related data, returns FAIL/SUCCESS in array object
-    function remove($delete = false)
+    public function remove($delete = false)
     {
         if($delete == true)
             return generateQuery('-t'.$this->id.' -R');
