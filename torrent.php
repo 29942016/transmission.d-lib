@@ -17,7 +17,9 @@ class Torrent
             $totalSize,
             $downloaded,
             $uploaded,
-            $ratio;
+            $ratio,
+            $bandwidthAllowance,
+            $peers;
     
     //Constructor
     function __construct($id)
@@ -27,11 +29,9 @@ class Torrent
         //If we successfully give this object a ID then load it with data.
         if($this->id != NULL)
             $this->update();
-        
-        echo 'Torrent: '.$this->id.' created.'.PHP_EOL;
     }
     
-    //Sets the objects values, this will be called every refresh.
+    //Sets the objects values.
     function update()
     {
         $data = generateQuery(' -t'.$this->id.' -i');
@@ -49,6 +49,10 @@ class Torrent
         $this->downloaded = $this->stripTextBuffer($data[16]);
         $this->uploaded = $this->stripTextBuffer($data[17]);
         $this->ratio = $this->stripTextBuffer($data[18]);
+        $this->peers = $this->stripTextBuffer($data[20]);
+        $this->bandwidthAllowance = $this->stripTextBuffer($data[41]);
+        
+        
     }
     
     //Removes the 'key value' on the array object
@@ -83,10 +87,11 @@ class Torrent
     function remove($delete = false)
     {
         if($delete == true)
-            return generateQuery('-t'.$id.' -R');
+            return generateQuery('-t'.$this->id.' -R');
         else    
-            return generateQuery('-t'.$id.' -r');
+            return generateQuery('-t'.$this->$id.' -r');
     }
+    
     
     //=====================================
     
@@ -133,6 +138,29 @@ class Torrent
     
     function getRatio()
     { return $this->ratio; }
+    
+      function getPeers()
+    { return $this->peers; }
+    
+    function getBandwidthAllowance()
+    { return $this->bandwidthAllowance; }
+    
+    function setBandwidthAllowance($input)
+    { 
+        $input = strtolower($input);
+        $append = "";
+        
+        if(strpos($input, "high") !== false)
+            $append.=" -Bh";
+        else if(strpos($input, "low") !== false)
+            $append.=" -Bl";
+        else
+            $append.=" -Bn";
+        
+        return generateQuery('-t'.$this->id.' '.$append);
+    }
+    
+  
     //==================================
     
 }

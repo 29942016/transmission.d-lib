@@ -9,10 +9,11 @@ $torrentList = array();
 refreshTorrents();
 
 //=========================================
-//      Transmission Settings API
+//      Transmission Global Settings API
 //=========================================
 
 //Adds torrent via URL+Autostart, returns FAIL/SUCCESS
+
 function addTorrent($url, $autostart = true)
 {
     $autostart = "";
@@ -25,7 +26,7 @@ function addTorrent($url, $autostart = true)
     return generateQuery($start." --add ".$url);
 }
 
-//Sets the Upload/Download speed, if 0 then no limit is applied.
+//Sets the global Upload/Download speed, if 0 then no limit is applied.
 function setSpeed($down = NULL, $up = NULL)
 {
     $append = "";
@@ -49,6 +50,8 @@ function refreshTorrents()
 {
     $ids = array();
     global $torrentList;
+    //unset($torrentList);  
+    //$torrentList = array();
     
     //Grab the ID of every available torrent into a array
     $idArray = generateQuery('-l | sed \'s/  */ /g\' | cut -d\' \' -f2');
@@ -66,19 +69,5 @@ function refreshTorrents()
     {
         $torrentList[$counter] = new Torrent($newTor);
     }
-    
 }
-
-//function used for debugging 
-function debug()
-{
-    global $torrentList;
-    
-    //echo var_dump($torrentList);
-    
-    //echo $torrentList[0]->getName();
-    $test = $torrentList[0]->info();
-    var_dump($test);
-}
-
 ?>
