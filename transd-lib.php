@@ -61,6 +61,15 @@ function setSpeed($down = NULL, $up = NULL)
     
 }
 
+//Globally modify the use of the micro transport protocol
+function useUTP($enabled)
+{
+    if($enabled == true)
+        return generateQuery('--utp');
+    else
+        return generateQuery('--no-utp');
+}
+
 //Tell the daemon to run a script as the transmission user on torrent completion
 function runScriptOnFinish($enabled = false, $scriptPath = "")
 {

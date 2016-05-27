@@ -59,13 +59,13 @@ class Torrent
     //Start downloading/uploading
     public function start()
     {
-        return generateQuery(' -t'.$this->id.' -s');
+        return parseOutput(generateQuery(' -t'.$this->id.' -s'));
     }
     
     //Stop downloading/uploading
     public function stop()
     {
-        return generateQuery(' -t'.$this->id.' -S');
+        return parseOutput(generateQuery(' -t'.$this->id.' -S'));
     }
     
     //Returns a structured array of this objects properties i.e name,id,hash,magnet.
@@ -78,9 +78,9 @@ class Torrent
     public function remove($delete = false)
     {
         if($delete == true)
-            return generateQuery('-t'.$this->id.' -R');
+            return parseOutput(generateQuery('-t'.$this->id.' -R'));
         else    
-            return generateQuery('-t'.$this->$id.' -r');
+            return parseOutput(generateQuery('-t'.$this->$id.' -r'));
     }
     
     
@@ -148,7 +148,7 @@ class Torrent
         else
             $append.=" -Bn";
         
-        return generateQuery('-t'.$this->id.' '.$append);
+        return parseOutput(generateQuery('-t'.$this->id.' '.$append));
     }
     
   
