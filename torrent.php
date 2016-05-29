@@ -78,9 +78,9 @@ class Torrent
     public function remove($delete = false)
     {
         if($delete == true)
-            return parseOutput(generateQuery('-t'.$this->id.' -R'));
+            return parseOutput(generateQuery('-t'.$this->id.' --remove-and-delete'));
         else    
-            return parseOutput(generateQuery('-t'.$this->$id.' -r'));
+            return parseOutput(generateQuery('-t'.$this->id.' -r'));
     }
     
     
