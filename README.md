@@ -8,13 +8,13 @@ put transmission credentials into authentication.php then include 'transd-lib.ph
 
 **example usage:**
   
-  $torrentList[1]->start();         //Start selected torrent
+  $torrents[1]->start();         //Start torrent #1
   
-  $torrentList[1]->stop();          //Stop selected torrent
+  $torrents[1]->stop();          //Stop torrent #1
   
-  $torrentList[1]->info();          //Retrieve all torrent data in array
+  $torrents[1]->info();          //Retrieve all info for torrent #1
   
-  $torrentList[1]->getName();       //Retrieve the name of the torrent
+  $torrents[1]->getName();       //Retrieve the name of the torrent
   
   addTorrent("/tmp/myTorrent.tor"); //Adds via magnetlink or local file
   
